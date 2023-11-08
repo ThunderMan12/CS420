@@ -19,7 +19,6 @@
                <children>
                   <RadioButton mnemonicParsing="false" text="Visit Item/Item Container" />
                   <RadioButton mnemonicParsing="false" text="Scan Farm" />
-                  <Button mnemonicParsing="false" onAction="#addItem" text="Add Item" />
                   <Button mnemonicParsing="false" onAction="#removeItem" text="Remove Item" />
                </children>
             </VBox>
