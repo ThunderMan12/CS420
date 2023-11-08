@@ -4,7 +4,7 @@ import java.util.List;
 
 public class ItemContainer implements FarmComponent{
 	
-	List<FarmItem> items;
+	List<FarmComponent> items;
 	String name;
 	float price;
 	int xCoord;
@@ -14,7 +14,7 @@ public class ItemContainer implements FarmComponent{
 	int height;
 	
 	
-	public ItemContainer(List<FarmItem> items, String name, float price, int xCoord, int yCoord, int length, int width, int height) {
+	public ItemContainer(List<FarmComponent> items, String name, float price, int xCoord, int yCoord, int length, int width, int height) {
 		this.name = name;
 		this.price = price;
 		this.xCoord = xCoord;
@@ -28,8 +28,8 @@ public class ItemContainer implements FarmComponent{
 		this.items.add(newItem);
 	}
 	
-	public void addItemContainer() {
-		
+	public void addItemContainer(ItemContainer newContainer) {
+		this.items.add(newContainer);
 	}
 	
 	@Override
@@ -41,24 +41,29 @@ public class ItemContainer implements FarmComponent{
 	@Override
 	public void changeName(String newName) {
 		// TODO Auto-generated method stub
-		
+		this.name = newName;
 	}
 
 	@Override
 	public void changeLocation(int newX, int newY) {
 		// TODO Auto-generated method stub
+		this.xCoord = newX;
+		this.yCoord = newY;
 		
 	}
 
 	@Override
 	public void changePrice(float newPrice) {
 		// TODO Auto-generated method stub
+		this.price = newPrice;
 		
 	}
 
 	@Override
 	public void changeDimensions(int length, int width) {
 		// TODO Auto-generated method stub
+		this.length = length;
+		this.width = width;
 		
 	}
 
