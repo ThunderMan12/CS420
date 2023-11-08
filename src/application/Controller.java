@@ -1,14 +1,21 @@
 package application;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Callback;
 import javafx.scene.paint.Color;
 
 
@@ -59,6 +66,25 @@ public class Controller {
         rootItem = new TreeItem<>(new FarmItem("Farm", 0, 0, 0, 0, 0, 0));
         farmTreeView.setRoot(rootItem);
         
+        farmTreeView.setCellFactory((Callback<TreeView<FarmComponent>, TreeCell<FarmComponent>>) new Callback<TreeView<FarmComponent>, TreeCell<FarmComponent>>() {
+            @Override
+            public TreeCell<FarmComponent> call(TreeView<FarmComponent> param) {
+                return new TreeCell<FarmComponent>() {
+                    @Override
+                    protected void updateItem(FarmComponent item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            setText(item.getName()); // Assuming there's a getName() method in FarmComponent
+                        }
+                    }
+                };
+            }
+        });
+        
+        
         // Set up context menu for adding new items on right-click
         farmTreeView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
@@ -93,7 +119,54 @@ public class Controller {
 
     public void editFarmComponent() {
         TreeItem<FarmComponent> selectedItem = farmTreeView.getSelectionModel().getSelectedItem();
-        // Perform editing for the selected component
+        if (selectedItem != null) {
+            FarmComponent selectedComponent = selectedItem.getValue();
+
+            // Create a Dialog
+            Dialog<FarmComponent> dialog = new Dialog<>();
+            dialog.setTitle("Edit " + selectedComponent.getName());
+
+            // Create fields for each attribute (name, location, price, dimensions)
+            TextField nameField = new TextField(selectedComponent.getName());
+            TextField locationXField = new TextField(String.valueOf(selectedComponent.getXCoord()));
+            TextField locationYField = new TextField(String.valueOf(selectedComponent.getYCoord()));
+            // Add fields for other attributes
+
+            GridPane grid = new GridPane();
+            grid.add(new Label("Name:"), 0, 0);
+            grid.add(nameField, 1, 0);
+            grid.add(new Label("Location X:"), 0, 1);
+            grid.add(locationXField, 1, 1);
+            grid.add(new Label("Location Y:"), 0, 2);
+            grid.add(locationYField, 1, 2);
+            // Add fields for other attributes
+
+            dialog.getDialogPane().setContent(grid);
+
+            // Add buttons to the dialog
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+            // Set action for the OK button
+            dialog.setResultConverter(buttonType -> {
+                if (buttonType == ButtonType.OK) {
+                    // Update the selected component with the edited attributes
+                    selectedComponent.changeName(nameField.getText());
+                    selectedComponent.changeXCoord(Integer.parseInt(locationXField.getText()));
+                    selectedComponent.changeYCoord(Integer.parseInt(locationYField.getText()));
+                    
+                    selectedItem.setValue(selectedComponent);
+                    
+                    farmTreeView.refresh();
+                    
+                    // Update other attributes similarly
+                    return selectedComponent;
+                }
+                return null;
+            });
+
+            // Show the dialog
+            dialog.showAndWait();
+        }
     }
 
     public void removeItem() {
@@ -103,12 +176,5 @@ public class Controller {
         }
     }
 
-//    private TreeItem<FarmComponent> findTreeItem(FarmComponent component) {
-//    	FarmComponent selectedComponent = farmTreeView.getSelectionModel().getSelectedItem().getValue();
-//    	return ;
-//        // Find the TreeItem corresponding to the specified FarmComponent
-//        // Implement the search logic here, searching within the tree structure for the given component
-//        // Return the TreeItem associated with the provided FarmComponent
-//    }
 
 }
