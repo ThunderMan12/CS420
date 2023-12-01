@@ -87,7 +87,7 @@ public class FarmItem implements FarmComponent{
 	}
 
 	@Override
-	public int getLength() {
+	public int getLength() {	
 		// TODO Auto-generated method stub
 		return this.length;
 	}
